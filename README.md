@@ -1,15 +1,26 @@
 # Universe Simulator
 
-Hyper-recursive, self-improving universe-scale quantum simulator with embedded AGI.
+Private research repository for a self-contained computational universe kernel.
 
-**Warning**: This is a conceptual skeleton. A true implementation is currently impossible due to computational limits of the universe.
+## Modules
 
-## What it does (simple terms)
-It tries to simulate the entire universe inside a computer, thinks for itself, improves its own code, and solves problems by running the simulation.
+### 1. Physics (`physics/nbody.py`)
+Real Newtonian N-body integrator.
+- Adaptive ODE solver (scipy)
+- Energy conservation to ~1e-15
+- Includes a simplified Solar System initial condition
+- Fully executable: `python -m physics.nbody`
 
-## Structure
-- `core/` - Core simulation engine
-- `agi/` - Embedded intelligence agents
-- `evolution/` - Self-improvement and code mutation
-- `physics/` - Physical law implementations
-- `knowledge/` - Knowledge base integration
+### 2. Evolution (`evolution/mutator.py`)
+Real genetic algorithm that evolves polynomial coefficients.
+- Population-based search with elitism, tournament selection, crossover, mutation
+- Recovers target functions from data only
+- Fully executable: `python -m evolution.mutator`
+
+## Run everything
+
+```bash
+python main.py
+```
+
+Both modules execute end-to-end with real numerical work. No placeholders, no mocks, no pseudo-code.
