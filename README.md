@@ -28,28 +28,28 @@ See also: [SECURITY.md](SECURITY.md)
 | **cache/** | `lfu.py` |
 | **compress/** | `huffman.py` |
 | **control/** | `pid.py`, `kalman.py`, `fsm.py`, `lqr.py` |
-| **core/** | `scheduler.py`, `observability.py`, `event_log.py`, `state.py`, `clock.py` |
-| **crypto/** | `merkle.py`, `hashchain.py` |
-| **data/** | `bitarray.py`, `bloom.py`, `interval_tree.py`, `lru.py`, `unionfind.py`, `skiplist.py`, `spatial_hash.py`, `entity_store.py`, `octree.py`, `kd_tree.py`, `btree.py` |
-| **evolution/** | `mutator.py` |
-| **finance/** | `irr.py`, `bond.py`, `black76.py` |
+| **core/** | `scheduler.py`, `observability.py`, `event_log.py`, `state.py`, `clock.py`, `priority_queue.py` |
+| **crypto/** | `merkle.py`, `hashchain.py`, `pure_sha256.py` |
+| **data/** | `bitarray.py`, `bloom.py`, `interval_tree.py`, `lru.py`, `unionfind.py`, `skiplist.py`, `spatial_hash.py`, `entity_store.py`, `octree.py`, `kd_tree.py`, `btree.py`, `segment_tree.py`, `trie.py` |
+| **evolution/** | `mutator.py`, `genetic.py` |
+| **finance/** | `irr.py`, `bond.py`, `black76.py`, `duration.py` |
 | **geometry/** | `convex_hull.py`, `aabb.py`, `raycast.py` |
-| **graph/** | `dijkstra.py`, `bellman_ford.py`, `toposort.py`, `floyd_warshall.py` |
+| **graph/** | `dijkstra.py`, `bellman_ford.py`, `toposort.py`, `floyd_warshall.py`, `kruskal.py`, `prim.py` |
 | **knowledge/** | `graph.py` |
 | **logic/** | `sat_solver.py` |
 | **matrix/** | `lu.py`, `qr.py`, `eigen.py` |
-| **ml/** | `numpy_net.py`, `bayes.py`, `kmeans.py` |
-| **net/** | `rate_limiter.py`, `circuit_breaker.py`, `retry.py` |
-| **observability/** | `metrics.py` |
-| **optim/** | `gradient.py`, `adam.py` |
-| **physics/** | `nbody.py`, `fractal.py`, `symbolic.py`, `integrator.py`, `collision.py`, `softbody.py`, `sph.py`, `gravity.py` |
+| **ml/** | `numpy_net.py`, `bayes.py`, `kmeans.py`, `perceptron.py` |
+| **net/** | `rate_limiter.py`, `circuit_breaker.py`, `retry.py`, `token_bucket.py` |
+| **observability/** | `metrics.py`, `tracer.py` |
+| **optim/** | `gradient.py`, `adam.py`, `sgd.py`, `rmsprop.py` |
+| **physics/** | `nbody.py`, `fractal.py`, `symbolic.py`, `integrator.py`, `collision.py`, `softbody.py`, `sph.py`, `gravity.py`, `barnes_hut.py` |
 | **protocol/** | `http_parser.py` |
-| **quant/** | `black_scholes.py`, `monte_carlo.py`, `binomial_tree.py`, `portfolio.py`, `heston.py` |
-| **search/** | `astar.py`, `rrt.py` |
+| **quant/** | `black_scholes.py`, `monte_carlo.py`, `binomial_tree.py`, `portfolio.py`, `heston.py`, `vasicek.py`, `cir.py` |
+| **search/** | `astar.py`, `rrt.py`, `beam_search.py` |
 | **security/** | `password.py`, `hmac_auth.py` |
-| **signal/** | `fft_filter.py`, `wavelet.py` |
-| **stats/** | `regression.py`, `bootstrap.py`, `distribution.py`, `hypothesis.py`, `kernel_density.py` |
-| **string/** | `kmp.py`, `edit_distance.py`, `rabin_karp.py`, `suffix_array.py` |
+| **signal/** | `fft_filter.py`, `wavelet.py`, `convolution.py` |
+| **stats/** | `regression.py`, `bootstrap.py`, `distribution.py`, `hypothesis.py`, `kernel_density.py`, `pca.py` |
+| **string/** | `kmp.py`, `edit_distance.py`, `rabin_karp.py`, `suffix_array.py`, `aho_corasick.py` |
 
 Root: `main.py`, `README.md`, `SECURITY.md`, `.gitignore`
 
@@ -63,7 +63,8 @@ Every module is independently executable:
 python -m physics.nbody
 python -m quant.black_scholes
 python -m data.spatial_hash
-python -m physics.gravity
+python -m physics.barnes_hut
+python -m crypto.pure_sha256
 # etc.
 ```
 
