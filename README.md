@@ -16,6 +16,8 @@ A collection of independently executable, original Python modules spanning physi
 - **Numerically verified** where applicable (energy conservation, put-call parity, residual norms, etc.).
 - **No external proprietary code** was copied or borrowed.
 
+See also: [SECURITY.md](SECURITY.md)
+
 ---
 
 ## Package Inventory (accurate as of latest push)
@@ -48,7 +50,7 @@ A collection of independently executable, original Python modules spanning physi
 | **stats/** | `regression.py`, `bootstrap.py`, `distribution.py`, `hypothesis.py` |
 | **string/** | `kmp.py`, `edit_distance.py`, `rabin_karp.py`, `suffix_array.py` |
 
-Root: `main.py`, `README.md`, `.gitignore`
+Root: `main.py`, `README.md`, `SECURITY.md`, `.gitignore`
 
 ---
 
@@ -78,3 +80,4 @@ python main.py
 2. Only modules that exist in this repository are listed above.
 3. All implementations are original and self-contained.
 4. Prefer verifiable numerical results over narrative claims.
+5. Security-sensitive modules are for research; see SECURITY.md before reuse.
