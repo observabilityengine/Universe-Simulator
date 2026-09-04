@@ -22,23 +22,25 @@ See also: [SECURITY.md](SECURITY.md)
 
 ## Latest additions (40 modules)
 
-**data/**: `avl.py`, `rope.py`, `scapegoat.py`, `btree_map.py`, `skip_list_map.py`, `fenwick_min.py`, `splay_map.py`, `segment_tree_lazy.py`
+**data/**: `cartesian_map`, `wavelet_tree`, `van_emde_map`, `order_stat_tree`, `fm_sketch`, `radix_tree`, `hyperloglog`
 
-**graph/**: `min_cost_max_flow.py`, `blossom.py`, `push_relabel.py`, `cycle_canceling.py`, `capacity_scaling.py`
+**graph/**: `dinic_scaling`, `mcmf_cost_scaling`, `densest_subgraph`, `edmonds_matching`, `karger_mincut`, `stoer_wagner`
 
-**ml/**: `isolation_forest.py`, `svm_smo.py`, `dbscan.py`, `optics.py`
+**ml/**: `xgboost_reg`, `spectral_clustering`, `mean_shift`, `gmm_em`
 
-**optim/**: `yogi.py`, `qhadam.py`, `ranger.py`, `adabelief.py`
+**optim/**: `lion`, `sophia`, `adan`
 
-**quant/**: `g2pp.py`, `hw1f.py`, `lmm.py`, `bdt.py`
+**quant/**: `cir_exact`, `hw2f`, `bachelier`, `sabr`
 
-**signal/**: `butterworth.py`, `wavelet_denoise.py`, `savgol_deriv.py`, `hilbert_huang.py`, `spectral_centroid.py`, `stft.py`, `mfcc_simple.py`
+**signal/**: `iir_notch`, `chebyshev`, `goertzel_bank`, `biquad`, `chroma`, `allpass`, `tonnetz`
 
-**crypto/**: `murmur3.py`, `cityhash.py`, `farmhash.py`, `spookyhash.py`
+**crypto/**: `blake2s`, `poly1305`, `argon2_stub`, `scrypt_stub`
 
-**stats/**: `kalman_2d.py`
+**mathlib/**: `lambert_w`
 
-**matrix/**: `csc.py`, `dok.py`, `lil.py`
+**string/**: `suffix_tree`
+
+**matrix/**: `ellpack`, `dia`, `bsr`
 
 All previous modules remain. Every new file is complete, original, and self-tested.
 
@@ -47,11 +49,11 @@ All previous modules remain. Every new file is complete, original, and self-test
 ## Run
 
 ```bash
-python -m data.avl
-python -m graph.push_relabel
-python -m ml.dbscan
-python -m quant.g2pp
-python -m crypto.murmur3
+python -m data.hyperloglog
+python -m graph.stoer_wagner
+python -m ml.gmm_em
+python -m quant.sabr
+python -m crypto.blake2s
 # etc.
 ```
 
