@@ -20,48 +20,38 @@ See also: [SECURITY.md](SECURITY.md)
 
 ---
 
-## Package Inventory (latest)
+## Latest additions (40 modules)
 
-All previously listed modules remain. Newly added in this round (40):
+**data/**: `avl.py`, `rope.py`, `scapegoat.py`, `btree_map.py`, `skip_list_map.py`, `fenwick_min.py`, `splay_map.py`, `segment_tree_lazy.py`
 
-**data/**: `red_black.py`, `van_emde_boas.py`, `min_queue.py`, `fenwick2d.py`, `treap.py`, `splay_link.py`, `discontinuity.py`
+**graph/**: `min_cost_max_flow.py`, `blossom.py`, `push_relabel.py`, `cycle_canceling.py`, `capacity_scaling.py`
 
-**graph/**: `dinic.py`, `hungarian.py`, `min_cost_flow.py`, `kosaraju.py`, `hopcroft_karp.py`
+**ml/**: `isolation_forest.py`, `svm_smo.py`, `dbscan.py`, `optics.py`
 
-**ml/**: `decision_stump.py`, `knn.py`, `random_forest.py`, `gradient_boosting.py`
+**optim/**: `yogi.py`, `qhadam.py`, `ranger.py`, `adabelief.py`
 
-**optim/**: `nesterov.py`, `adadelta.py`, `radam.py`, `lamb.py`
+**quant/**: `g2pp.py`, `hw1f.py`, `lmm.py`, `bdt.py`
 
-**finance/**: `nelson_siegel.py`
+**signal/**: `butterworth.py`, `wavelet_denoise.py`, `savgol_deriv.py`, `hilbert_huang.py`, `spectral_centroid.py`, `stft.py`, `mfcc_simple.py`
 
-**quant/**: `hull_white.py`, `cir_pp.py`, `black_karasinski.py`
+**crypto/**: `murmur3.py`, `cityhash.py`, `farmhash.py`, `spookyhash.py`
 
-**signal/**: `savitzky_golay.py`, `median_filter.py`, `wiener.py`, `peak_detect.py`
+**stats/**: `kalman_2d.py`
 
-**string/**: `suffix_automaton.py`
+**matrix/**: `csc.py`, `dok.py`, `lil.py`
 
-**crypto/**: `crc32.py`, `xxhash32.py`, `siphash.py`, `fnv1a.py`
-
-**stats/**: `cusum.py`, `kalman_smoother.py`
-
-**matrix/**: `sparse_csr.py`, `coo.py`
-
-**physics/**: `hard_sphere.py`, `spring_damper.py`
-
-**data (extra)**: `sliding_window_max.py`
-
-Root: `main.py`, `README.md`, `SECURITY.md`, `.gitignore`
+All previous modules remain. Every new file is complete, original, and self-tested.
 
 ---
 
 ## Run
 
 ```bash
-python -m data.red_black
-python -m graph.dinic
-python -m ml.knn
-python -m quant.hull_white
-python -m crypto.siphash
+python -m data.avl
+python -m graph.push_relabel
+python -m ml.dbscan
+python -m quant.g2pp
+python -m crypto.murmur3
 # etc.
 ```
 
