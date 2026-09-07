@@ -27,25 +27,22 @@ def adaptive_de(
     best = pop[best_idx][:]
     best_fit = fitness[best_idx]
 
-    tau1, tau2 = 0.1, 0.1  # probability to adjust F / CR
+    tau1, tau2 = 0.1, 0.1
 
     for _ in range(generations):
         for i in range(pop_size):
-            # Adapt parameters
             Fi = F[i]
             CRi = CR[i]
             if rng.random() < tau1:
                 Fi = 0.1 + rng.random() * 0.9
             if rng.random() < tau2:
                 CRi = rng.random()
-            # Mutation
             idxs = [j for j in range(pop_size) if j != i]
             a, b, c = rng.sample(idxs, 3)
             mutant = []
             for d in range(dim):
                 val = pop[a][d] + Fi * (pop[b][d] - pop[c][d])
                 mutant.append(max(lo, min(hi, val)))
-            # Crossover
             trial = []
             j_rand = rng.randrange(dim)
             for d in range(dim):
