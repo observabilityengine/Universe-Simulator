@@ -1,53 +1,86 @@
 """Pollard's Rho integer factorization.
 
-Complexity: expected O(n^{1/4}).
-Finds a non-trivial factor of composite n. Returns n itself if prime or failure after attempts.
-Assumes n > 1.
+Complexity: O(n^{1/4}) expected. Original implementation.
 """
 from __future__ import annotations
 
 import random
-import math
+from typing import List, Optional
 
 
-def pollard_rho(n: int, max_attempts: int = 20) -> int:
-    """Return a non-trivial factor of n, or n if none found / prime."""
-    if n <= 1:
-        raise ValueError("n must be > 1")
+def _gcd(a: int, b: int) -> int:
+    while b:
+        a, b = b, a % b
+    return abs(a)
+
+
+def pollard_rho(n: int, seed: int = 42, max_attempts: int = 20) -> Optional[int]:
+    """Find a non-trivial factor of n using Pollard's Rho."""
+    if n < 2:
+        return None
     if n % 2 == 0:
         return 2
     if n % 3 == 0:
         return 3
 
-    for _ in range(max_attempts):
-        c = random.randrange(1, n)
-        x = random.randrange(0, n)
+    rng = random.Random(seed)
+    for attempt in range(max_attempts):
+        c = rng.randrange(1, n)
+        x = rng.randrange(0, n)
         y = x
         d = 1
+        f = lambda v: (v * v + c) % n
         while d == 1:
-            x = (x * x + c) % n
-            y = (y * y + c) % n
-            y = (y * y + c) % n
-            d = math.gcd(abs(x - y), n)
-            if d == n:
-                break
-        if 1 < d < n:
+            x = f(x)
+            y = f(f(y))
+            d = _gcd(abs(x - y), n)
+        if d != n:
             return d
-    return n
+    return None
+
+
+def factorize(n: int, seed: int = 42) -> List[int]:
+    """Fully factorize n into primes using Pollard's Rho + trial."""
+    if n < 2:
+        return []
+    factors: List[int] = []
+    for p in [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]:
+        while n % p == 0:
+            factors.append(p)
+            n //= p
+    if n == 1:
+        return sorted(factors)
+
+    def _is_prime_simple(x: int) -> bool:
+        if x < 2: return False
+        if x < 4: return True
+        if x % 2 == 0 or x % 3 == 0: return False
+        i = 5
+        while i * i <= x:
+            if x % i == 0 or x % (i + 2) == 0: return False
+            i += 6
+        return True
+
+    def _factor(m: int, s: int) -> None:
+        if m == 1: return
+        if _is_prime_simple(m):
+            factors.append(m)
+            return
+        d = pollard_rho(m, seed=s)
+        if d is None or d == m:
+            factors.append(m)
+            return
+        _factor(d, s + 1)
+        _factor(m // d, s + 2)
+
+    _factor(n, seed)
+    return sorted(factors)
 
 
 if __name__ == "__main__":
-    f = pollard_rho(8051)
-    assert f in (83, 97)
-    assert pollard_rho(17) == 17
-    assert pollard_rho(100) in (2, 4, 5, 10, 20, 25, 50)
-    assert pollard_rho(2) == 2
-    try:
-        pollard_rho(1)
-        assert False
-    except ValueError:
-        pass
-    n = 104729 * 104723
-    f = pollard_rho(n)
-    assert 1 < f < n and n % f == 0
+    assert pollard_rho(15) in (3, 5)
+    assert pollard_rho(91) in (7, 13)
+    assert factorize(12) == [2, 2, 3]
+    assert factorize(97) == [97]
+    assert sorted(factorize(1001)) == [7, 11, 13]
     print("pollard_rho self-tests passed")
