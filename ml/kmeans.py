@@ -1,58 +1,53 @@
-"""
-Universe Simulator - K-Means Clustering
-Original pure-Python Lloyd iteration with random init.
-"""
+"""K-means clustering with K-means++ initialization.
 
+Complexity: O(iters * k * n * d). Original implementation.
+"""
 from __future__ import annotations
-
 import random
-import math
 from typing import List, Tuple
 
-Point = Tuple[float, ...]
-
-
-def _dist2(a: Point, b: Point) -> float:
-    return sum((x - y) ** 2 for x, y in zip(a, b))
-
-
 def kmeans(
-    data: List[Point],
+    X: List[List[float]],
     k: int,
     max_iter: int = 100,
     seed: int = 42,
-) -> Tuple[List[Point], List[int]]:
-    if k <= 0 or k > len(data):
-        raise ValueError("invalid k")
+) -> Tuple[List[List[float]], List[int]]:
     rng = random.Random(seed)
-    centroids = [data[i] for i in rng.sample(range(len(data)), k)]
-    labels = [0] * len(data)
-
+    n, d = len(X), len(X[0])
+    centroids = [X[rng.randrange(n)][:]]
+    for _ in range(1, k):
+        dists = []
+        for x in X:
+            md = min(sum((x[j]-c[j])**2 for j in range(d)) for c in centroids)
+            dists.append(md)
+        total = sum(dists)
+        r = rng.random() * total
+        cum = 0.0
+        for i, dist in enumerate(dists):
+            cum += dist
+            if cum >= r:
+                centroids.append(X[i][:])
+                break
+    labels = [0] * n
     for _ in range(max_iter):
-        # assign
         changed = False
-        for i, p in enumerate(data):
-            best = min(range(k), key=lambda c: _dist2(p, centroids[c]))
+        for i, x in enumerate(X):
+            best = min(range(k), key=lambda c: sum((x[j]-centroids[c][j])**2 for j in range(d)))
             if labels[i] != best:
                 labels[i] = best
                 changed = True
-        # update
-        new_centroids: List[Point] = []
-        for c in range(k):
-            members = [data[i] for i, lab in enumerate(labels) if lab == c]
-            if not members:
-                new_centroids.append(centroids[c])
-                continue
-            dim = len(members[0])
-            avg = tuple(sum(m[d] for m in members) / len(members) for d in range(dim))
-            new_centroids.append(avg)
-        centroids = new_centroids
         if not changed:
             break
+        for c in range(k):
+            members = [X[i] for i in range(n) if labels[i] == c]
+            if members:
+                centroids[c] = [sum(m[j] for m in members)/len(members) for j in range(d)]
     return centroids, labels
 
-
 if __name__ == "__main__":
-    pts = [(0.0, 0.0), (0.1, 0.1), (5.0, 5.0), (5.1, 5.2), (10.0, 0.0)]
-    cents, labs = kmeans(pts, k=2, seed=1)
-    print("kmeans self-test passed", cents, labs)
+    X = [[0.0, 0.0], [0.1, 0.1], [5.0, 5.0], [5.1, 5.2], [0.2, 0.0], [4.9, 5.0]]
+    cents, labs = kmeans(X, k=2, seed=1)
+    assert len(set(labs)) == 2
+    assert labs[0] == labs[1] == labs[4]
+    assert labs[2] == labs[3] == labs[5]
+    print("kmeans self-tests passed")
