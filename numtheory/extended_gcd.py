@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import Tuple
 
 def extended_gcd(a: int, b: int) -> Tuple[int, int, int]:
+    """Return (g, x, y) such that a*x + b*y = g = gcd(a,b)."""
     if b == 0:
         return abs(a), (1 if a >= 0 else -1), 0
     g, x1, y1 = extended_gcd(b, a % b)
