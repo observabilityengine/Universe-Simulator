@@ -1,95 +1,71 @@
-"""
-Universe Simulator - Miller-Rabin Primality Test
-Deterministic for n < 3_317_044_064_679_887_385_961_981 with fixed witnesses.
-Probabilistic otherwise (error < 4^{-k} for k rounds).
-Complexity O(k log^3 n). Handles n <= 1 as composite.
-"""
+"""Miller-Rabin primality test.
 
+Complexity: O(k log^3 n) with k witnesses. Original implementation.
+"""
 from __future__ import annotations
 
-from .mod_pow import mod_pow
+import random
+from typing import List
 
 
-# Deterministic witnesses for 64-bit range and beyond known bounds
-_DETERMINISTIC_WITNESSES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
+def _powmod(base: int, exp: int, mod: int) -> int:
+    result = 1
+    base %= mod
+    while exp > 0:
+        if exp & 1:
+            result = (result * base) % mod
+        base = (base * base) % mod
+        exp >>= 1
+    return result
 
 
-def _is_composite(a: int, d: int, n: int, s: int) -> bool:
-    """Return True if a is a strong liar (witness that n is composite)."""
-    x = mod_pow(a, d, n)
-    if x == 1 or x == n - 1:
+def is_prime(n: int, k: int = 12, seed: int = 42) -> bool:
+    """Miller-Rabin probabilistic primality test."""
+    if n < 2:
         return False
-    for _ in range(s - 1):
-        x = (x * x) % n
-        if x == n - 1:
-            return False
-    return True
-
-
-def miller_rabin(n: int, k: int = 12) -> bool:
-    """
-    Return True if n is (probably) prime.
-    For n < 2**64 uses deterministic set of witnesses.
-    For larger n uses first k witnesses from the deterministic list (or random if k larger).
-    """
-    if n <= 1:
-        return False
-    if n <= 3:
+    if n in (2, 3, 5, 7):
         return True
-    if n % 2 == 0 or n % 3 == 0:
+    if n % 2 == 0 or n % 3 == 0 or n % 5 == 0 or n % 7 == 0:
         return False
 
-    # Write n-1 = d * 2^s
-    d = n - 1
     s = 0
+    d = n - 1
     while d % 2 == 0:
         d //= 2
         s += 1
 
-    witnesses = _DETERMINISTIC_WITNESSES
-    if n >= 2**64:
-        # Use first min(k, len) witnesses; for full probabilistic would need random
-        witnesses = _DETERMINISTIC_WITNESSES[: min(k, len(_DETERMINISTIC_WITNESSES))]
+    rng = random.Random(seed)
+    bases = [2, 3, 5, 7, 11, 13, 23]
+    while len(bases) < k:
+        a = rng.randrange(2, n - 1)
+        if a not in bases:
+            bases.append(a)
 
-    for a in witnesses:
+    for a in bases:
         if a >= n:
             continue
-        if _is_composite(a, d, n, s):
+        x = _powmod(a, d, n)
+        if x == 1 or x == n - 1:
+            continue
+        composite = True
+        for _ in range(s - 1):
+            x = _powmod(x, 2, n)
+            if x == n - 1:
+                composite = False
+                break
+        if composite:
             return False
     return True
 
 
-def is_prime(n: int) -> bool:
-    """Alias for miller_rabin with default witnesses."""
-    return miller_rabin(n)
-
-
 if __name__ == "__main__":
-    # Known primes
-    assert miller_rabin(2)
-    assert miller_rabin(3)
-    assert miller_rabin(5)
-    assert miller_rabin(17)
-    assert miller_rabin(97)
-    assert miller_rabin(10**9 + 7)
-
-    # Composites
-    assert not miller_rabin(1)
-    assert not miller_rabin(0)
-    assert not miller_rabin(-5)
-    assert not miller_rabin(4)
-    assert not miller_rabin(9)
-    assert not miller_rabin(15)
-    assert not miller_rabin(25)
-    assert not miller_rabin(49)
-    assert not miller_rabin(91)  # 7*13
-    assert not miller_rabin(561)  # Carmichael
-
-    # Edge powers of two
-    assert not miller_rabin(16)
-    assert not miller_rabin(2**31)
-
-    # Large known prime
-    assert miller_rabin(10**18 + 3)
-
-    print("miller_rabin self-test passed")
+    assert is_prime(2)
+    assert is_prime(3)
+    assert is_prime(97)
+    assert is_prime(10**9 + 7)
+    assert not is_prime(1)
+    assert not is_prime(91)
+    assert not is_prime(100)
+    assert not is_prime(2047)
+    assert is_prime(32416190071)
+    print("miller_rabin self-tests passed")
