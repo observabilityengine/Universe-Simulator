@@ -37,15 +37,12 @@ def metropolis_hastings(
 if __name__ == "__main__":
     def log_std_normal(x: List[float]) -> float:
         return -0.5 * sum(v * v for v in x)
-    samples = metropolis_hastings(
-        log_std_normal, dim=2, n_samples=3000, burn_in=500,
-        proposal_scale=0.8, seed=1,
-    )
+    samples = metropolis_hastings(log_std_normal, dim=2, n_samples=3000, burn_in=500, proposal_scale=0.8, seed=1)
     assert len(samples) == 3000
     mean0 = sum(s[0] for s in samples) / len(samples)
     mean1 = sum(s[1] for s in samples) / len(samples)
-    assert abs(mean0) < 0.15, mean0
-    assert abs(mean1) < 0.15, mean1
+    assert abs(mean0) < 0.15
+    assert abs(mean1) < 0.15
     var0 = sum((s[0] - mean0) ** 2 for s in samples) / len(samples)
-    assert 0.7 < var0 < 1.4, var0
+    assert 0.7 < var0 < 1.4
     print("metropolis_hastings self-tests passed")

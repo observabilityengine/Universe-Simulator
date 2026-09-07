@@ -51,5 +51,5 @@ if __name__ == "__main__":
     spec2 = fft(sine)
     mags2 = [abs(z) for z in spec2]
     peak = max(range(n // 2), key=lambda i: mags2[i])
-    assert peak == freq, peak
+    assert peak == freq
     print("fft self-tests passed")
