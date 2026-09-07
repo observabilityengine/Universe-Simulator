@@ -5,17 +5,14 @@ Complexity: O(V E) for unweighted graphs. Original implementation.
 from __future__ import annotations
 
 from collections import deque
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 
 def betweenness_centrality(
     n: int,
     edges: List[Tuple[int, int]],
 ) -> List[float]:
-    """
-    Compute betweenness centrality for an undirected unweighted graph.
-    Returns list of centrality scores, one per node.
-    """
+    """Compute betweenness centrality for an undirected unweighted graph."""
     adj: List[List[int]] = [[] for _ in range(n)]
     for u, v in edges:
         adj[u].append(v)
