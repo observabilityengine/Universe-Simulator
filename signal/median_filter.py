@@ -1,27 +1,28 @@
-"""
-Universe Simulator - 1-D Median Filter
-Original sliding-window median.
-"""
+"""1D median filter.
 
+Complexity: O(n * w log w). Original implementation.
+"""
 from __future__ import annotations
-
 from typing import List
 
-def median_filter(data: List[float], window: int = 3) -> List[float]:
-    if window % 2 == 0:
-        window += 1
+def median_filter(signal: List[float], window: int = 3) -> List[float]:
+    if window % 2 == 0 or window < 1:
+        raise ValueError("window must be odd positive")
     half = window // 2
-    n = len(data)
+    n = len(signal)
     out = []
     for i in range(n):
-        lo = max(0, i - half)
-        hi = min(n, i + half + 1)
-        window_vals = sorted(data[lo:hi])
-        out.append(window_vals[len(window_vals) // 2])
+        vals = []
+        for j in range(i - half, i + half + 1):
+            jj = max(0, min(n - 1, j))
+            vals.append(signal[jj])
+        vals.sort()
+        out.append(vals[half])
     return out
 
 if __name__ == "__main__":
-    data = [1.0, 100.0, 2.0, 3.0, 200.0, 4.0]
-    filtered = median_filter(data, 3)
-    assert filtered[1] == 2.0 and filtered[4] == 4.0
-    print("median_filter self-test passed", filtered)
+    s = [1.0, 2.0, 100.0, 4.0, 5.0]
+    m = median_filter(s, 3)
+    assert m[2] == 4.0
+    assert m[0] == 1.0
+    print("median_filter self-tests passed")
