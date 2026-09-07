@@ -7,10 +7,7 @@ import random
 from typing import List, Tuple
 
 def kmeans(
-    X: List[List[float]],
-    k: int,
-    max_iter: int = 100,
-    seed: int = 42,
+    X: List[List[float]], k: int, max_iter: int = 100, seed: int = 42,
 ) -> Tuple[List[List[float]], List[int]]:
     rng = random.Random(seed)
     n, d = len(X), len(X[0])
