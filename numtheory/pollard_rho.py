@@ -3,26 +3,21 @@
 Complexity: O(n^{1/4}) expected. Original implementation.
 """
 from __future__ import annotations
-
 import random
 from typing import List, Optional
-
 
 def _gcd(a: int, b: int) -> int:
     while b:
         a, b = b, a % b
     return abs(a)
 
-
 def pollard_rho(n: int, seed: int = 42, max_attempts: int = 20) -> Optional[int]:
-    """Find a non-trivial factor of n using Pollard's Rho."""
     if n < 2:
         return None
     if n % 2 == 0:
         return 2
     if n % 3 == 0:
         return 3
-
     rng = random.Random(seed)
     for attempt in range(max_attempts):
         c = rng.randrange(1, n)
@@ -38,9 +33,7 @@ def pollard_rho(n: int, seed: int = 42, max_attempts: int = 20) -> Optional[int]
             return d
     return None
 
-
 def factorize(n: int, seed: int = 42) -> List[int]:
-    """Fully factorize n into primes using Pollard's Rho + trial."""
     if n < 2:
         return []
     factors: List[int] = []
@@ -75,7 +68,6 @@ def factorize(n: int, seed: int = 42) -> List[int]:
 
     _factor(n, seed)
     return sorted(factors)
-
 
 if __name__ == "__main__":
     assert pollard_rho(15) in (3, 5)

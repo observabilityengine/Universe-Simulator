@@ -3,10 +3,8 @@
 Complexity: O(iters * dim). Original implementation.
 """
 from __future__ import annotations
-
 from typing import Callable, List, Tuple
 import math
-
 
 def adam(
     f: Callable[[List[float]], float],
@@ -35,16 +33,13 @@ def adam(
             x[i] -= lr * mhat / (math.sqrt(vhat) + eps)
     return x, f(x)
 
-
 if __name__ == "__main__":
     def rosen(x):
         return (1 - x[0]) ** 2 + 100 * (x[1] - x[0] ** 2) ** 2
-
     def rosen_grad(x):
         d0 = -2 * (1 - x[0]) - 400 * x[0] * (x[1] - x[0] ** 2)
         d1 = 200 * (x[1] - x[0] ** 2)
         return [d0, d1]
-
     x, v = adam(rosen, rosen_grad, [-1.0, 1.0], lr=0.05, max_iter=3000)
     assert v < 0.1, v
     print("adam self-tests passed")
