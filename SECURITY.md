@@ -4,64 +4,72 @@
 
 ## Scope
 
-This repository is a private computational research kernel. It contains original implementations of algorithms, numerical methods, and infrastructure components. It is **not** a production service, network-facing application, or multi-user system.
+This repository is a **private computational research kernel**. It contains original implementations of algorithms, numerical methods, evolutionary computation, physics, finance, machine learning, and infrastructure components.
+
+It is **not**:
+
+- A production service
+- A network-facing application or API server
+- A multi-user system
+- A cryptographic library intended for protecting real secrets in production
 
 ## Supported Versions
 
-| Version | Supported |
-|---------|-----------|
-| `main`  | Yes       |
-| Other branches / tags | No |
+| Version              | Supported |
+|----------------------|-----------|
+| `main`               | Yes       |
+| Other branches / tags| No        |
 
-Only the `main` branch receives updates.
+Only the `main` branch receives updates and is considered supported.
 
 ## Security Considerations
 
 ### What this project is
-- Collection of standalone, offline-executable Python modules
+- A collection of standalone, offline-executable Python modules
 - Research and educational code
-- No authentication service, no network listener by default, no persistent multi-user state
+- No authentication service, no default network listener, no persistent multi-user state
 
 ### What this project is not
-- A web application or API server
-- A cryptographic library intended for production secrets management
-- A system that processes untrusted remote input by default
+- A web application or public API
+- A production-grade cryptographic library
+- A system designed to process untrusted remote input by default
 
 ## Cryptographic & Security Modules
 
-The following modules implement security-related primitives for research and demonstration purposes:
+The following modules implement security-related primitives for research and demonstration purposes only:
 
-| Module | Purpose | Notes |
-|--------|---------|-------|
-| `security/password.py` | PBKDF2-HMAC-SHA256 password hashing | Suitable for study; use established libraries (e.g. Argon2, bcrypt) for production |
-| `security/hmac_auth.py` | HMAC-SHA256 message authentication | Correct use of `hmac.compare_digest` |
-| `crypto/merkle.py` | Merkle tree | Integrity proofs |
-| `crypto/hashchain.py` | Append-only hash chain | Tamper-evident log |
-| `crypto/otp.py` | One-time pad helpers | Educational only |
+| Module                  | Purpose                              | Notes                                                                 |
+|-------------------------|--------------------------------------|-----------------------------------------------------------------------|
+| `security/password.py`  | PBKDF2-HMAC-SHA256 password hashing  | Suitable for study; prefer Argon2 / bcrypt for production             |
+| `security/hmac_auth.py` | HMAC-SHA256 message authentication   | Uses `hmac.compare_digest` correctly                                  |
+| `crypto/merkle.py`      | Merkle tree                          | Integrity proofs                                                      |
+| `crypto/hashchain.py`   | Append-only hash chain               | Tamper-evident log                                                    |
+| `crypto/otp.py`         | One-time pad helpers                 | Educational only                                                      |
 
-These implementations are original and intended for understanding and experimentation. They are **not** formally audited for production cryptographic use.
+These implementations are original and intended for understanding and experimentation. They have **not** been formally audited and must **not** be used as the sole protection for real secrets or high-value systems without independent expert review.
 
 ## Reporting a Vulnerability
 
-If you discover a security-relevant issue in this repository (e.g. incorrect cryptographic construction, unsafe deserialization, or a logic flaw that could be dangerous if the code were reused in a privileged context):
+If you discover a security-relevant issue (incorrect cryptographic construction, unsafe deserialization, logic flaw that could be dangerous if the code were reused in a privileged context, etc.):
 
 1. **Do not** open a public GitHub issue.
 2. Contact the repository owner directly via a private channel.
-3. Provide a clear description of the issue, affected module(s), and (if possible) a minimal reproduction.
+3. Provide a clear description of the issue, the affected module(s), and (if possible) a minimal reproduction.
 
-We will acknowledge receipt and assess the report. Because this is a private research repository with no external users or network exposure, there is no formal SLA or bug-bounty program.
+Reports will be acknowledged and assessed. Because this is a private research repository with no external users or network exposure, there is no formal SLA or bug-bounty program.
 
 ## Safe Use Guidelines
 
-- Treat all modules as **research code**.
-- Do not use the cryptographic modules as the sole protection for real secrets or high-value systems without independent review.
-- Be aware that `core/state.py` uses Python `pickle` for checkpoints — never unpickle data from untrusted sources.
-- Modules that parse external formats (`protocol/http_parser.py`, etc.) are for controlled/demo input only.
+- Treat **all** modules as research code.
+- Do not use the cryptographic modules as the primary protection for real secrets without independent review.
+- `core/state.py` uses Python `pickle` for checkpoints — **never** unpickle data from untrusted sources.
+- Modules that parse external formats (e.g. `protocol/http_parser.py`) are intended for controlled / demo input only.
+- Keep dependencies updated. Runtime dependencies are limited to standard scientific libraries (NumPy, SciPy, SymPy, NetworkX where used). No third-party web frameworks or authentication middleware are included.
 
 ## Dependencies
 
-Runtime dependencies are limited and standard (NumPy, SciPy, SymPy, NetworkX where used). Keep the environment updated. No third-party web frameworks or authentication middleware are included.
+Runtime dependencies are intentionally minimal and standard. Keep the environment updated. No third-party web frameworks, authentication middleware, or network services are part of this repository.
 
 ## Policy Updates
 
-This security policy may be updated on `main` as the project evolves. The version on the `main` branch is authoritative.
+This security policy may be updated on the `main` branch as the project evolves. The version present on `main` is authoritative.
