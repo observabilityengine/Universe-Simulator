@@ -1,60 +1,102 @@
-"""
-Universe Simulator - Dinic Max Flow
-Original level-graph + DFS blocking flow.
-"""
+"""Dinic's algorithm for maximum flow.
 
+Complexity: O(V^2 E) worst-case. Original implementation.
+"""
 from __future__ import annotations
 
 from collections import deque
-from typing import Dict, List
+from typing import List, Tuple
 
-def dinic(capacity: Dict[int, Dict[int, float]], source: int, sink: int) -> float:
-    residual = {u: dict(vs) for u, vs in capacity.items()}
-    for u in list(residual):
-        for v in residual[u]:
-            residual.setdefault(v, {})
-            residual[v].setdefault(u, 0.0)
 
-    def bfs_level() -> Dict[int, int]:
-        level = {source: 0}
-        q = deque([source])
+class _Edge:
+    __slots__ = ("to", "rev", "cap")
+
+    def __init__(self, to: int, rev: int, cap: int) -> None:
+        self.to = to
+        self.rev = rev
+        self.cap = cap
+
+
+class Dinic:
+    """Maximum flow using Dinic's blocking-flow algorithm."""
+
+    def __init__(self, n: int) -> None:
+        self.n = n
+        self.graph: List[List[_Edge]] = [[] for _ in range(n)]
+        self.level: List[int] = []
+        self.ptr: List[int] = []
+
+    def add_edge(self, u: int, v: int, capacity: int) -> None:
+        if capacity <= 0:
+            return
+        fwd = _Edge(v, len(self.graph[v]), capacity)
+        rev = _Edge(u, len(self.graph[u]), 0)
+        self.graph[u].append(fwd)
+        self.graph[v].append(rev)
+
+    def _bfs(self, source: int, sink: int) -> bool:
+        self.level = [-1] * self.n
+        self.level[source] = 0
+        q: deque[int] = deque([source])
         while q:
             u = q.popleft()
-            for v, cap in residual.get(u, {}).items():
-                if v not in level and cap > 1e-12:
-                    level[v] = level[u] + 1
-                    q.append(v)
-        return level
+            for e in self.graph[u]:
+                if e.cap > 0 and self.level[e.to] < 0:
+                    self.level[e.to] = self.level[u] + 1
+                    q.append(e.to)
+        return self.level[sink] >= 0
 
-    def dfs(u: int, pushed: float, level: Dict[int, int], it: Dict[int, int]) -> float:
-        if u == sink:
+    def _dfs(self, u: int, sink: int, pushed: int) -> int:
+        if u == sink or pushed == 0:
             return pushed
-        edges = list(residual.get(u, {}).items())
-        while it[u] < len(edges):
-            v, cap = edges[it[u]]
-            if level.get(v, -1) == level[u] + 1 and cap > 1e-12:
-                tr = dfs(v, min(pushed, cap), level, it)
-                if tr > 1e-12:
-                    residual[u][v] -= tr
-                    residual[v][u] += tr
+        while self.ptr[u] < len(self.graph[u]):
+            e = self.graph[u][self.ptr[u]]
+            if e.cap > 0 and self.level[e.to] == self.level[u] + 1:
+                tr = self._dfs(e.to, sink, min(pushed, e.cap))
+                if tr > 0:
+                    e.cap -= tr
+                    self.graph[e.to][e.rev].cap += tr
                     return tr
-            it[u] += 1
-        return 0.0
+            self.ptr[u] += 1
+        return 0
 
-    flow = 0.0
-    while True:
-        level = bfs_level()
-        if sink not in level:
-            break
-        it = {u: 0 for u in residual}
-        while True:
-            pushed = dfs(source, float("inf"), level, it)
-            if pushed < 1e-12:
-                break
-            flow += pushed
-    return flow
+    def max_flow(self, source: int, sink: int) -> int:
+        flow = 0
+        while self._bfs(source, sink):
+            self.ptr = [0] * self.n
+            while True:
+                pushed = self._dfs(source, sink, 10**18)
+                if pushed == 0:
+                    break
+                flow += pushed
+        return flow
+
+
+def dinic_max_flow(
+    n: int,
+    edges: List[Tuple[int, int, int]],
+    source: int,
+    sink: int,
+) -> int:
+    """Convenience wrapper: edges = [(u, v, capacity), ...]."""
+    g = Dinic(n)
+    for u, v, c in edges:
+        g.add_edge(u, v, c)
+    return g.max_flow(source, sink)
+
 
 if __name__ == "__main__":
-    cap = {0: {1: 10, 2: 5}, 1: {2: 15, 3: 5}, 2: {3: 10}, 3: {}}
-    assert abs(dinic(cap, 0, 3) - 15.0) < 1e-6
-    print("dinic self-test passed")
+    edges = [
+        (0, 1, 10), (0, 2, 10),
+        (1, 2, 2), (1, 3, 4), (1, 4, 8),
+        (2, 4, 9),
+        (3, 5, 10),
+        (4, 3, 6), (4, 5, 10),
+    ]
+    flow = dinic_max_flow(6, edges, 0, 5)
+    assert flow == 19, flow
+    assert dinic_max_flow(3, [(0, 1, 5)], 0, 2) == 0
+    assert dinic_max_flow(2, [(0, 1, 7)], 0, 1) == 7
+    edges2 = [(0, 1, 3), (0, 2, 2), (1, 2, 1), (1, 3, 2), (2, 3, 4)]
+    assert dinic_max_flow(4, edges2, 0, 3) == 5
+    print("dinic self-tests passed")
