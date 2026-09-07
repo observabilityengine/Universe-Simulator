@@ -11,8 +11,7 @@ def haar_forward(signal: List[float]) -> Tuple[List[float], List[List[float]]]:
     details: List[List[float]] = []
     while len(x) >= 2:
         n = len(x) - (len(x) % 2)
-        approx = []
-        detail = []
+        approx, detail = [], []
         for i in range(0, n, 2):
             a = (x[i] + x[i + 1]) / math.sqrt(2)
             d = (x[i] - x[i + 1]) / math.sqrt(2)

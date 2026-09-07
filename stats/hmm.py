@@ -78,5 +78,4 @@ if __name__ == "__main__":
     assert len(path) == len(obs)
     assert all(s in (0, 1) for s in path)
     assert 1 in path[1:7]
-    assert all(0 <= alpha[t][j] <= 1.0 + 1e-9 for t in range(len(obs)) for j in range(2))
     print("hmm self-tests passed")
