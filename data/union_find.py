@@ -3,6 +3,7 @@
 Complexity: O(alpha(n)) per operation. Original implementation.
 """
 from __future__ import annotations
+from typing import List
 
 class UnionFind:
     def __init__(self, n: int) -> None:
