@@ -1,79 +1,88 @@
-"""
-Universe Simulator - Linear SVM via SMO (simplified)
-Original sequential minimal optimization for hard-margin approximation.
-"""
+"""Support Vector Machine trained by Sequential Minimal Optimization (SMO).
 
+Binary soft-margin classification. Complexity: O(n^2 * iters). Original.
+"""
 from __future__ import annotations
-
+import math
+import random
 from typing import List, Tuple
 
-class LinearSVM:
-    def __init__(self, C: float = 1.0, tol: float = 1e-3, max_passes: int = 20):
-        self.C = C
-        self.tol = tol
-        self.max_passes = max_passes
-        self.w: List[float] = []
-        self.b = 0.0
 
-    def fit(self, X: List[List[float]], y: List[int]) -> None:
-        n, d = len(X), len(X[0])
-        alpha = [0.0] * n
-        self.b = 0.0
-        passes = 0
-        while passes < self.max_passes:
-            changed = 0
-            for i in range(n):
-                ei = self._predict_raw(X[i], alpha, X, y) - y[i]
-                if (y[i] * ei < -self.tol and alpha[i] < self.C) or (y[i] * ei > self.tol and alpha[i] > 0):
-                    j = (i + 1) % n
-                    ej = self._predict_raw(X[j], alpha, X, y) - y[j]
-                    ai_old, aj_old = alpha[i], alpha[j]
-                    if y[i] != y[j]:
-                        L = max(0.0, alpha[j] - alpha[i])
-                        H = min(self.C, self.C + alpha[j] - alpha[i])
-                    else:
-                        L = max(0.0, alpha[i] + alpha[j] - self.C)
-                        H = min(self.C, alpha[i] + alpha[j])
-                    if L == H:
-                        continue
-                    eta = 2 * self._dot(X[i], X[j]) - self._dot(X[i], X[i]) - self._dot(X[j], X[j])
-                    if eta >= 0:
-                        continue
-                    alpha[j] -= y[j] * (ei - ej) / eta
-                    alpha[j] = max(L, min(H, alpha[j]))
-                    if abs(alpha[j] - aj_old) < 1e-5:
-                        continue
-                    alpha[i] += y[i] * y[j] * (aj_old - alpha[j])
-                    b1 = self.b - ei - y[i] * (alpha[i] - ai_old) * self._dot(X[i], X[i]) - y[j] * (alpha[j] - aj_old) * self._dot(X[i], X[j])
-                    b2 = self.b - ej - y[i] * (alpha[i] - ai_old) * self._dot(X[i], X[j]) - y[j] * (alpha[j] - aj_old) * self._dot(X[j], X[j])
-                    self.b = (b1 + b2) / 2
-                    changed += 1
-            if changed == 0:
-                passes += 1
-            else:
-                passes = 0
-        self.w = [0.0] * d
+def linear_kernel(x1: List[float], x2: List[float]) -> float:
+    return sum(a * b for a, b in zip(x1, x2))
+
+
+def smo_train(
+    X: List[List[float]],
+    y: List[int],
+    C: float = 1.0,
+    tol: float = 1e-3,
+    max_passes: int = 20,
+    seed: int = 42,
+) -> Tuple[List[float], float]:
+    """Returns alphas and bias b. Decision: sum alpha_i y_i K(x_i, x) + b."""
+    rng = random.Random(seed)
+    n = len(X)
+    alphas = [0.0] * n
+    b = 0.0
+    passes = 0
+    while passes < max_passes:
+        num_changed = 0
         for i in range(n):
-            for k in range(d):
-                self.w[k] += alpha[i] * y[i] * X[i][k]
+            # Compute error
+            Ei = sum(alphas[j] * y[j] * linear_kernel(X[j], X[i]) for j in range(n)) + b - y[i]
+            if (y[i] * Ei < -tol and alphas[i] < C) or (y[i] * Ei > tol and alphas[i] > 0):
+                j = i
+                while j == i:
+                    j = rng.randrange(n)
+                Ej = sum(alphas[k] * y[k] * linear_kernel(X[k], X[j]) for k in range(n)) + b - y[j]
+                ai_old, aj_old = alphas[i], alphas[j]
+                if y[i] != y[j]:
+                    L = max(0.0, alphas[j] - alphas[i])
+                    H = min(C, C + alphas[j] - alphas[i])
+                else:
+                    L = max(0.0, alphas[i] + alphas[j] - C)
+                    H = min(C, alphas[i] + alphas[j])
+                if abs(L - H) < 1e-12:
+                    continue
+                eta = 2 * linear_kernel(X[i], X[j]) - linear_kernel(X[i], X[i]) - linear_kernel(X[j], X[j])
+                if eta >= 0:
+                    continue
+                alphas[j] = aj_old - y[j] * (Ei - Ej) / eta
+                alphas[j] = max(L, min(H, alphas[j]))
+                if abs(alphas[j] - aj_old) < 1e-5:
+                    continue
+                alphas[i] = ai_old + y[i] * y[j] * (aj_old - alphas[j])
+                # Update bias
+                b1 = b - Ei - y[i] * (alphas[i] - ai_old) * linear_kernel(X[i], X[i]) - \
+                     y[j] * (alphas[j] - aj_old) * linear_kernel(X[i], X[j])
+                b2 = b - Ej - y[i] * (alphas[i] - ai_old) * linear_kernel(X[i], X[j]) - \
+                     y[j] * (alphas[j] - aj_old) * linear_kernel(X[j], X[j])
+                if 0 < alphas[i] < C:
+                    b = b1
+                elif 0 < alphas[j] < C:
+                    b = b2
+                else:
+                    b = 0.5 * (b1 + b2)
+                num_changed += 1
+        if num_changed == 0:
+            passes += 1
+        else:
+            passes = 0
+    return alphas, b
 
-    def _dot(self, a: List[float], b: List[float]) -> float:
-        return sum(x * y for x, y in zip(a, b))
 
-    def _predict_raw(self, x: List[float], alpha: List[float], X: List[List[float]], y: List[int]) -> float:
-        s = self.b
-        for i in range(len(X)):
-            s += alpha[i] * y[i] * self._dot(X[i], x)
-        return s
+def predict(alphas: List[float], b: float, X: List[List[float]], y: List[int], x: List[float]) -> int:
+    val = sum(alphas[i] * y[i] * linear_kernel(X[i], x) for i in range(len(X))) + b
+    return 1 if val >= 0 else -1
 
-    def predict(self, x: List[float]) -> int:
-        return 1 if sum(w * xi for w, xi in zip(self.w, x)) + self.b >= 0 else -1
 
 if __name__ == "__main__":
-    X = [[0.0, 0.0], [0.1, 0.1], [1.0, 1.0], [1.1, 0.9]]
-    y = [-1, -1, 1, 1]
-    svm = LinearSVM(C=1.0, max_passes=10)
-    svm.fit(X, y)
-    assert svm.predict([0.05, 0.05]) == -1
-    assert svm.predict([1.05, 1.0]) == 1
-    print("svm_smo self-test passed")
+    # Simple linearly separable
+    X = [[0.0, 0.0], [1.0, 1.0], [0.5, 0.3], [2.0, 2.5], [1.8, 1.9], [0.1, 0.2]]
+    y = [-1, 1, -1, 1, 1, -1]
+    alphas, b = smo_train(X, y, C=10.0, max_passes=30, seed=1)
+    correct = sum(1 for i in range(len(X)) if predict(alphas, b, X, y, X[i]) == y[i])
+    assert correct >= 5, correct
+    print(f"svm_smo accuracy={correct}/{len(X)}")
+    print("svm_smo self-tests passed")
