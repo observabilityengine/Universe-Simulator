@@ -1,70 +1,79 @@
-"""
-Universe Simulator - Successive Shortest Path Min-Cost Max-Flow
-Original SPFA-based implementation.
-"""
+"""Successive shortest path minimum-cost maximum-flow with potentials (Dijkstra).
 
+Complexity: O(F * (E + V) log V). Original implementation.
+"""
 from __future__ import annotations
+import heapq
+from typing import List, Tuple, Dict
 
-from collections import deque
-from typing import Dict, List, Tuple
 
-def min_cost_flow(
-    capacity: Dict[int, Dict[int, float]],
-    cost: Dict[int, Dict[int, float]],
+def min_cost_max_flow(
+    n: int,
+    edges: List[Tuple[int, int, int, int]],
     source: int,
     sink: int,
-    max_flow: float = float("inf"),
-) -> Tuple[float, float]:
-    residual_cap = {u: dict(vs) for u, vs in capacity.items()}
-    residual_cost = {u: dict(vs) for u, vs in cost.items()}
-    for u in list(residual_cap):
-        for v in residual_cap[u]:
-            residual_cap.setdefault(v, {})
-            residual_cap[v].setdefault(u, 0.0)
-            residual_cost.setdefault(v, {})
-            residual_cost[v].setdefault(u, -cost[u][v])
+) -> Tuple[int, int]:
+    """edges = (u, v, capacity, cost). Returns (max_flow, min_cost)."""
+    graph: List[List[List[int]]] = [[] for _ in range(n)]  # to, cap, cost, rev
+    for u, v, cap, cost in edges:
+        graph[u].append([v, cap, cost, len(graph[v])])
+        graph[v].append([u, 0, -cost, len(graph[u]) - 1])
 
-    flow = cost_sum = 0.0
-    while flow < max_flow:
-        # SPFA
-        dist = {source: 0.0}
-        parent = {}
-        in_queue = {source}
-        q = deque([source])
-        while q:
-            u = q.popleft()
-            in_queue.discard(u)
-            for v, cap in residual_cap.get(u, {}).items():
-                if cap > 1e-12:
-                    nd = dist[u] + residual_cost[u][v]
-                    if v not in dist or nd < dist[v] - 1e-12:
-                        dist[v] = nd
-                        parent[v] = u
-                        if v not in in_queue:
-                            q.append(v)
-                            in_queue.add(v)
-        if sink not in parent:
+    flow = cost = 0
+    potential = [0] * n
+
+    while True:
+        dist = [float("inf")] * n
+        dist[source] = 0
+        parent: List[Tuple[int, int]] = [(-1, -1)] * n  # (node, edge_idx)
+        pq = [(0, source)]
+        while pq:
+            d, u = heapq.heappop(pq)
+            if d > dist[u]:
+                continue
+            for i, e in enumerate(graph[u]):
+                v, cap, c, _ = e
+                if cap <= 0:
+                    continue
+                nd = dist[u] + c + potential[u] - potential[v]
+                if nd < dist[v]:
+                    dist[v] = nd
+                    parent[v] = (u, i)
+                    heapq.heappush(pq, (nd, v))
+        if dist[sink] == float("inf"):
             break
-        # bottleneck
-        path_flow = max_flow - flow
+        for i in range(n):
+            if dist[i] < float("inf"):
+                potential[i] += dist[i]
+        # Augment
+        aug = float("inf")
         v = sink
         while v != source:
-            u = parent[v]
-            path_flow = min(path_flow, residual_cap[u][v])
+            u, ei = parent[v]
+            aug = min(aug, graph[u][ei][1])
             v = u
         v = sink
         while v != source:
-            u = parent[v]
-            residual_cap[u][v] -= path_flow
-            residual_cap[v][u] += path_flow
-            cost_sum += path_flow * residual_cost[u][v]
+            u, ei = parent[v]
+            graph[u][ei][1] -= aug
+            rev = graph[u][ei][3]
+            graph[v][rev][1] += aug
+            cost += aug * graph[u][ei][2]
             v = u
-        flow += path_flow
-    return flow, cost_sum
+        flow += aug
+    return flow, cost
+
 
 if __name__ == "__main__":
-    cap = {0: {1: 2, 2: 1}, 1: {3: 1}, 2: {3: 1}, 3: {}}
-    cst = {0: {1: 1, 2: 2}, 1: {3: 1}, 2: {3: 1}, 3: {}}
-    f, c = min_cost_flow(cap, cst, 0, 3)
-    assert abs(f - 2.0) < 1e-6
-    print("min_cost_flow self-test passed", f, c)
+    edges = [
+        (0, 1, 5, 2),
+        (0, 2, 3, 4),
+        (1, 2, 2, 1),
+        (1, 3, 4, 3),
+        (2, 3, 6, 2),
+    ]
+    f, c = min_cost_max_flow(4, edges, 0, 3)
+    assert f == 8, f
+    assert c > 0
+    print(f"min_cost_flow flow={f} cost={c}")
+    print("min_cost_flow self-tests passed")
