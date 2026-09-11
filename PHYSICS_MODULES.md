@@ -39,4 +39,18 @@
 - climate_energy.py – 0-D energy-balance climate
 - conservation.py – Mass/momentum/energy validation
 
-All pure Python, self-testing, no duplicates of prior packages.
+## physics/ (core classical / statistical / continuum)
+- nbody.py – Newtonian N-body with scipy ODE integrator + solar-system helper
+- symbolic.py – SymPy Lagrangian / equations of motion / energy
+- fractal.py – Mandelbrot and Julia escape-time sets
+- ising.py / ising_metropolis.py – 2-D Ising model + Metropolis sampling
+- verlet.py / verlet_md.py / verlet_list.py – Verlet integration and neighbour lists
+- heat_equation.py / heat_diffusion.py / wave_equation.py – continuum PDEs
+- harmonic_oscillator.py / pendulum.py / projectile.py / spring_damper.py – elementary mechanics
+- brownian.py / langevin.py – stochastic dynamics
+- gravity.py / collision.py / hard_sphere.py / rigid_body.py / softbody.py / sph.py – interaction models
+- integrator.py / barnes_hut.py / orbital_period.py – supporting integrators and utilities
+
+All pure Python (NumPy/SciPy only where declared), self-testing, no duplicates of prior packages.
+
+**Audit note (2026-09-11):** `physics/__init__.py` cleaned of dangling imports (non-existent cellular / two_body_1d symbols removed). Public exports are now limited to symbols that exist in the package.
