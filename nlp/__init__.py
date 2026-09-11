@@ -1,1 +1,1 @@
-"""Universe Simulator – Natural Language Processing package (pure Python)."""
+"""Universe Simulator – NLP package (pure Python)."""
