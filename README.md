@@ -4,7 +4,7 @@
 
 `observabilityengine/Universe-Simulator`
 
-A large collection of independently executable, original Python modules covering algorithms, numerical methods, evolutionary computation, physics, quantitative finance, machine learning, signal processing, data structures, control theory, cryptography (research-only), graph algorithms, number theory, statistics, and core infrastructure.
+A large collection of independently executable, original Python modules covering numerical physics, cosmology, deep learning, time series, NLP, Bayesian statistics, computational biology, cryptography (research-only), graphics, compilers, geospatial algorithms, reinforcement learning, database internals, and core scientific infrastructure.
 
 Every module is **complete**, **self-contained**, and **verified** by its own executable self-tests (`if __name__ == "__main__"` with real asserts).
 
@@ -38,7 +38,7 @@ Any genuine scope limitation (e.g. "assumes input fits in memory", "educational 
 Key points:
 
 - This is a **private research repository**. It is not a production service, network-facing application, or multi-user system.
-- Cryptographic and security-related modules (`crypto/`, `security/`) are for **research and educational purposes only**. They are **not** formally audited for production use with real secrets.
+- Cryptographic and security-related modules (`crypto/`, `crypto_adv/`, `security/`) are for **research and educational purposes only**. They are **not** formally audited for production use with real secrets.
 - Never unpickle data from untrusted sources (`core/state.py` uses `pickle` for checkpoints).
 - Report security-relevant issues **privately** to the repository owner. Do not open public issues for vulnerabilities.
 - Only the `main` branch is supported.
@@ -47,38 +47,179 @@ Key points:
 
 ## Repository Structure
 
+### Numerical Physics & Cosmology
+
 | Package | Domain |
 |---------|--------|
-| `agi/` | Agent, planning, and memory components |
-| `cache/` | Caching algorithms (ARC, LFU, …) |
-| `compress/` | Compression (Huffman, LZ77/78, arithmetic coding, BWT, RLE, …) |
-| `control/` | Control theory (PID, LQR, LQG, Kalman, MPC, pole placement, …) |
-| `core/` | Core infrastructure (scheduler, event bus, lock-free structures, …) |
-| `crypto/` | Research cryptographic primitives and hashes (not production-audited) |
-| `data/` | Advanced data structures (trees, tries, skip lists, union-find, LRU, sketches, …) |
+| `nbody/` | N-body gravitational integrators, symplectic schemes, Barnes–Hut, particle-mesh |
+| `cosmology/` | Friedmann equations, ΛCDM scale-factor evolution, cosmic distances |
+| `hydro/` | SPH hydrodynamics, equation of state, cooling/heating |
+| `planetary/` | Collision solvers, tidal heating, climate/energy-balance models |
+| `dark/` | Dark-matter particle engines, halo formation, subhalo detection |
+| `physics/` | Ising model, Verlet MD, heat/wave equations, pendulum |
+| `quantum/` | Quantum simulation primitives |
+
+### Machine Learning & Statistics
+
+| Package | Domain |
+|---------|--------|
+| `dl/` | Pure-Python autograd tensor engine, layers, optimizers, CNN/RNN/LSTM/GRU, attention, transformer blocks, training loop |
+| `ml/` | CART, random forest, gradient boosting, k-NN, naive Bayes, k-means, DBSCAN, PCA |
+| `bayes/` | Conjugate priors, Metropolis–Hastings, Gibbs, HMC, NUTS, variational inference, Bayesian linear/logistic, LOO-CV |
+| `timeseries/` | AR/MA/ARMA/ARIMA/SARIMA, exponential smoothing, Holt–Winters, ADF, ACF/PACF, GARCH, Granger causality, change-point, anomaly detection |
+| `rl/` | MDP, value/policy iteration, Q-learning, SARSA, actor-critic, DQN |
+| `stats/` | Metropolis–Hastings, HMM, bootstrap, KDE, KS test, linear regression |
+| `optim/` | Adam, L-BFGS, simulated annealing, Nelder–Mead, Powell |
+
+### Language, Vision & Graphics
+
+| Package | Domain |
+|---------|--------|
+| `nlp/` | Tokenization, stemming, lemmatization, TF-IDF, word2vec, GloVe, POS/NER, sentiment, topic modeling, BPE, transformer LM |
+| `image/` | Grayscale, histogram equalization, Gaussian blur, Sobel/Canny, morphology, Hough, SIFT/SURF/ORB, homography, stitching |
+| `graphics/` | Ray tracer, rasterizer, z-buffer, Blinn–Phong/Phong, texture/UV mapping, mesh/OBJ/STL loaders, SSAO, depth-of-field, antialiasing |
+
+### Systems, Compilers & Data
+
+| Package | Domain |
+|---------|--------|
+| `compiler/` | Lexer, recursive-descent parser, AST, interpreter, bytecode, constant folding, DCE, type checker, REPL, JIT |
+| `database/` | B+ tree, WAL, query planner, SQL parser, buffer pool, MVCC, row/column stores |
+| `data/` | Trees, tries, skip lists, union-find, LRU, sketches |
+| `core/` | Scheduler, event bus, lock-free structures |
 | `dist/` | Distributed systems primitives |
-| `evolution/` | Evolutionary computation and swarm intelligence (DE, NSGA-II, GWO, CMA-ES, MAP-Elites, …) |
-| `finance/` | Quantitative finance (Black-Scholes, binomial trees, bonds, yield curves, …) |
-| `geometry/` | Computational geometry (Delaunay, …) |
-| `graph/` | Graph algorithms (shortest paths, max-flow/Dinic, matching, SCC, MST/Kruskal, Louvain, betweenness, coloring, …) |
-| `knowledge/` | Knowledge representation |
-| `logic/` | Logic, SAT, resolution |
-| `mathlib/` | Numerical linear algebra (CG, QR, Cholesky, LU, SVD, determinants, PCA, …) |
-| `matrix/` | Sparse and dense matrix formats / factorizations |
-| `ml/` | Machine learning (CART, random forest, gradient boosting, k-NN, naive Bayes, k-means, DBSCAN, PCA, …) |
-| `net/` | Networking utilities (rate limiting, circuit breaker, …) |
-| `numtheory/` | Number theory (Miller-Rabin, Pollard's Rho, sieve, extended GCD, …) |
-| `observability/` | Metrics, tracing, histograms |
-| `optim/` | Optimizers (Adam, L-BFGS, simulated annealing, Nelder-Mead, Powell, …) |
-| `physics/` | Physics simulations (Ising, Verlet MD, heat/wave equations, pendulum, …) |
-| `protocol/` | Protocol parsers |
-| `quant/` | Quantitative models (Heston, Merton jump-diffusion, …) |
-| `search/` | Search algorithms |
+| `consensus/` | Consensus protocols |
+| `cache/` | ARC, LFU, and related caches |
+| `net/` | Rate limiting, circuit breaker |
+
+### Scientific Domains
+
+| Package | Domain |
+|---------|--------|
+| `bio/` | Needleman–Wunsch, Smith–Waterman, UPGMA, neighbor-joining, HMM genomics, ORF prediction, restriction enzymes, PCR simulation |
+| `geo/` | Geohash, H3-style index, Haversine/Vincenty, UTM, WGS84/ECEF, KD-tree, ball tree, quadtree, spatial join |
+| `crypto_adv/` | RSA, Diffie–Hellman, ECC/ECDSA, ChaCha20, AES, HKDF, PBKDF2, Poly1305, Merkle trees, Shamir secret sharing, Schnorr ZKP |
+| `crypto/` | Research cryptographic primitives and hashes (not production-audited) |
 | `security/` | Password hashing, HMAC helpers (research-only) |
-| `signal/` | Signal processing (FFT, wavelets, Hilbert, convolution, Savitzky-Golay, median filter, …) |
+| `formal/` | Formal methods / SAT-related utilities |
+| `symbolic/` | Symbolic computation helpers |
+| `mathlib/` | CG, QR, Cholesky, LU, SVD, determinants, PCA |
+| `matrix/` | Sparse and dense matrix formats / factorizations |
+| `numtheory/` | Miller–Rabin, Pollard's Rho, sieve, extended GCD |
+| `signal/` | FFT, wavelets, Hilbert, convolution, Savitzky–Golay, median filter |
+| `geometry/` | Computational geometry (Delaunay, …) |
+| `graph/` | Shortest paths, max-flow/Dinic, matching, SCC, MST, Louvain, betweenness, coloring |
+| `string/` | KMP, Z-algorithm, suffix structures, edit distance |
 | `sort/` | Sorting algorithms |
-| `stats/` | Statistics and sampling (Metropolis-Hastings, HMM, bootstrap, KDE, KS test, linear regression, …) |
-| `string/` | String algorithms (KMP, Z-algorithm, suffix structures, edit distance, …) |
+| `search/` | Search algorithms |
+| `control/` | PID, LQR, LQG, Kalman, MPC, pole placement |
+| `evolution/` | DE, NSGA-II, GWO, CMA-ES, MAP-Elites, GP, co-evolution |
+| `finance/` | Black–Scholes, binomial trees, bonds, yield curves |
+| `quant/` | Heston, Merton jump-diffusion |
+| `compress/` | Huffman, LZ77/78, arithmetic coding, BWT, RLE |
+| `logic/` | Logic, SAT, resolution |
+| `knowledge/` | Knowledge representation |
+| `protocol/` | Protocol parsers |
+| `observability/` | Metrics, tracing, histograms |
+| `agi/` | Agent, planning, and memory components |
+
+---
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [MODULE_CATALOG.md](MODULE_CATALOG.md) | Catalog of modules with one-line descriptions |
+| [PHYSICS_MODULES.md](PHYSICS_MODULES.md) | Numerical physics module reference |
+| [RARE_MODULES.md](RARE_MODULES.md) | Rare / high-complexity module notes |
+| [OPERATIONS.md](OPERATIONS.md) | Operational guidance |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues and fixes |
+| [TEST_SUITES.md](TEST_SUITES.md) | How self-tests are structured and run |
+| [FAQ.md](FAQ.md) | Frequently asked questions |
+| [DUE_DILIGENCE.md](DUE_DILIGENCE.md) | Diligence notes for reviewers |
+| [SECURITY.md](SECURITY.md) | Security policy |
+
+---
+
+## How to Run
+
+Each module is self-contained and runnable:
+
+```bash
+# Deep learning
+python -m dl.tensor
+python -m dl.train_loop
+python -m dl.mlp
+
+# Time series
+python -m timeseries.arima
+python -m timeseries.garch
+python -m timeseries.adfuller
+
+# NLP
+python -m nlp.tfidf
+python -m nlp.word2vec
+python -m nlp.transformer_lm
+
+# Physics
+python -m nbody.nbody_integrator
+python -m cosmology.friedmann
+python -m hydro.sph
+
+# Bayesian
+python -m bayes.metropolis_hastings
+python -m bayes.hamiltonian_mcmc
+
+# Biology / geospatial / crypto (research)
+python -m bio.needleman_wunsch
+python -m geo.geohash
+python -m crypto_adv.rsa
+
+# Compiler / graphics / image
+python -m compiler.interpreter
+python -m graphics.raytracer
+python -m image.canny
+
+# Classic packages
+python -m evolution.differential_evolution
+python -m ml.cart
+python -m graph.dinic
+python -m optim.lbfgs
+python -m finance.black_scholes
+python -m signal.fft
+```
+
+Or run the top-level entry point (if present):
+
+```bash
+python main.py
+```
+
+Every module includes an `if __name__ == "__main__"` block that executes real assertions covering both the happy path and edge cases.
+
+---
+
+## Deep Learning (`dl/`)
+
+Pure-Python reverse-mode autograd engine and neural network components:
+
+- **Core:** `tensor.py`, `autograd.py`, `init_weights.py`
+- **Layers:** `linear_layer.py`, `conv2d.py`, `pooling.py`, `batch_norm.py`, `dropout.py`
+- **Activations / losses:** `relu.py`, `sigmoid.py`, `softmax.py`, `mse_loss.py`, `cross_entropy_loss.py`
+- **Optimizers:** `sgd_optimizer.py`, `adam_optimizer.py`
+- **Models:** `sequential.py`, `mlp.py`, `cnn.py`, `rnn.py`, `lstm.py`, `gru.py`
+- **Attention / residual:** `attention.py`, `transformer_block.py`, `resnet_block.py`
+- **Training:** `train_loop.py`
+
+---
+
+## Time Series (`timeseries/`)
+
+- Classical: AR, MA, ARMA, ARIMA, SARIMA
+- Smoothing: exponential smoothing, Holt–Winters
+- Diagnostics: ADF, ACF/PACF, stationarity, Granger causality
+- Decomposition, change-point, anomaly detection, cross-correlation
+- GARCH, VAR, Fourier features, Prophet-style model, time-series CV
 
 ---
 
@@ -93,40 +234,6 @@ The `evolution/` package contains original implementations of evolutionary and s
 - Island Model GA, Memetic Algorithm, Cultural Algorithm
 - Novelty Search, MAP-Elites
 - Genetic Programming, Stochastic Ranking, Co-evolution
-
----
-
-## How to Run
-
-Each module is self-contained and runnable:
-
-```bash
-python -m evolution.differential_evolution
-python -m evolution.nsga2
-python -m evolution.grey_wolf
-python -m ml.cart
-python -m ml.pca
-python -m graph.dinic
-python -m graph.louvain
-python -m optim.lbfgs
-python -m optim.adam
-python -m physics.ising
-python -m signal.fft
-python -m stats.metropolis_hastings
-python -m numtheory.miller_rabin
-python -m finance.black_scholes
-python -m finance.binomial_option
-python -m string.kmp
-python -m mathlib.conjugate_gradient
-```
-
-Or run the top-level entry point (if present):
-
-```bash
-python main.py
-```
-
-Every module includes an `if __name__ == "__main__"` block that executes real assertions covering both the happy path and edge cases.
 
 ---
 
