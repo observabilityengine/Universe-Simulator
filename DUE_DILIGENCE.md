@@ -1,8 +1,8 @@
 # Due Diligence Summary
 
 **Universe Simulator (`observabilityengine/Universe-Simulator`)**  
-Private computational research kernel  
-Document date: 2026-09-11 (audit refresh)
+Open-source computational research kernel  
+Document date: 2026-09-11
 
 ---
 
@@ -33,20 +33,19 @@ Explicitly forbidden: placeholders, `NotImplementedError` for the general case, 
 
 ## 3. Security Posture
 
-- Private repository; access controlled by GitHub organisation permissions.
+- Open-source repository under the MIT License.
 - Cryptographic and password modules (`crypto/`, `crypto_adv/`, `security/`) are **research / educational only** and are **not** audited for production use with real secrets.
 - `core.state` uses Python `pickle` for checkpoints – never unpickle untrusted data.
 - No network listeners, no authentication surface, no multi-tenant isolation concerns inside the codebase itself.
-- Full policy: SECURITY.md.
+- Full policy: [SECURITY.md](SECURITY.md). Prefer GitHub Security Advisories for vulnerability reports.
 
 ---
 
 ## 4. Licensing & Ownership
 
-- Private repository.
-- All rights reserved by the owner.
-- No public open-source licence is attached.
-- Redistribution or commercial exploitation outside the authorised context requires explicit written permission.
+- Released under the **MIT License** (see [LICENSE](LICENSE)).
+- Copyright (c) 2024–2026 observabilityengine.
+- Additional notice in the LICENSE: cryptographic modules are research/educational only.
 
 ---
 
@@ -56,7 +55,7 @@ Explicitly forbidden: placeholders, `NotImplementedError` for the general case, 
 - Tests assert numerical results, invariants, and known reference values.
 - No external test-framework dependency.
 - Deterministic seeds are used for stochastic algorithms.
-- See TEST_SUITES.md and OPERATIONS.md.
+- See [TEST_SUITES.md](TEST_SUITES.md) and [OPERATIONS.md](OPERATIONS.md).
 
 **2026-09-11 audit sample (all passed):**
 - `cosmology/friedmann.py` – cosmic age ≈ 13.46 Gyr, χ(z=1) ≈ 3304 Mpc
@@ -88,10 +87,10 @@ Explicitly forbidden: placeholders, `NotImplementedError` for the general case, 
 
 - Only the `main` branch is supported.
 - New modules are accepted only when they meet the full quality bar (complete, original, self-testing).
-- Security-relevant issues are reported privately to the repository owner.
+- Security-relevant issues should be reported via GitHub Security Advisories or privately to maintainers.
 
 **2026-09-11 code fix:**
-- `physics/__init__.py` – removed dangling imports of non-existent symbols (`cellular`, `two_body_1d`). Public exports now limited to symbols that exist in the package (`NBodySystem`, `create_solar_system`, `SymbolicSystem`, `harmonic_oscillator`, `mandelbrot`, `julia`).
+- `physics/__init__.py` – removed dangling imports of non-existent symbols (`cellular`, `two_body_1d`). Public exports now limited to symbols that exist in the package.
 
 ---
 
@@ -99,20 +98,20 @@ Explicitly forbidden: placeholders, `NotImplementedError` for the general case, 
 
 - No third-party runtime services.
 - Optional NumPy/SciPy is the only common external numeric dependency and is used sparingly (declared in module docstrings where present).
-- No package registry publishing; consumption is by direct clone of the private repository.
+- Distributed via public GitHub repository under MIT.
 
 ---
 
 ## 10. Contact & Escalation
 
-- Operational or correctness questions → repository owner.
-- Security concerns → private report to the owner (do not open public issues for vulnerabilities).
+- Operational or correctness questions → open a GitHub issue or discussion.
+- Security concerns → [GitHub Security Advisory](https://github.com/observabilityengine/Universe-Simulator/security/advisories/new) preferred; otherwise private contact with maintainers.
 
 ---
 
 **Conclusion**  
-The repository is a high-integrity, privately held research artefact. Its design emphasises correctness, originality, and verifiability over feature velocity or production packaging. Due diligence confirms that the stated quality and security policies are reflected in the actual codebase structure and module contents. The 2026-09-11 audit corrected one structural import defect and re-verified a representative cross-section of self-tests.
+The repository is a high-integrity open-source research artefact. Its design emphasises correctness, originality, and verifiability over feature velocity or production packaging. Due diligence confirms that the stated quality and security policies are reflected in the actual codebase structure and module contents.
 
 ---
 
-*This document is intended for internal review and authorised counterparties only.*
+*This document is intended for reviewers, contributors, and users evaluating the project.*
