@@ -1,6 +1,8 @@
 # Universe Simulator
 
-**Private computational research kernel**
+**Open-source computational research kernel**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 `observabilityengine/Universe-Simulator`
 
@@ -10,7 +12,7 @@ Every module is **complete**, **self-contained**, and **verified** by its own ex
 
 ---
 
-## Project Policy — Production-Ready Only
+## Project Policy — Complete & Runnable Only
 
 This repository enforces a strict quality bar. Every module **must** satisfy all of the following:
 
@@ -37,10 +39,10 @@ Any genuine scope limitation (e.g. "assumes input fits in memory", "educational 
 
 Key points:
 
-- This is a **private research repository**. It is not a production service, network-facing application, or multi-user system.
+- This is a research kernel, not a production service, network-facing application, or multi-user system.
 - Cryptographic and security-related modules (`crypto/`, `crypto_adv/`, `security/`) are for **research and educational purposes only**. They are **not** formally audited for production use with real secrets.
 - Never unpickle data from untrusted sources (`core/state.py` uses `pickle` for checkpoints).
-- Report security-relevant issues **privately** to the repository owner. Do not open public issues for vulnerabilities.
+- Report security-relevant issues via a [GitHub Security Advisory](https://github.com/observabilityengine/Universe-Simulator/security/advisories/new) when possible, or contact maintainers privately.
 - Only the `main` branch is supported.
 
 ---
@@ -142,7 +144,7 @@ Import as `from stringalgo.kmp import kmp_search` and `from sigproc.fft import f
 
 | Document | Purpose |
 |----------|---------|
-| [MODULE_CATALOG.md](MODULE_CATALOG.md) | Catalog of modules with one-line descriptions |
+| [MODULE_CATALOG.md](MODULE_CATALOG.md) | Catalog of modules with package summaries |
 | [PHYSICS_MODULES.md](PHYSICS_MODULES.md) | Numerical physics module reference |
 | [RARE_MODULES.md](RARE_MODULES.md) | Rare / high-complexity module notes |
 | [OPERATIONS.md](OPERATIONS.md) | Operational guidance |
@@ -151,11 +153,16 @@ Import as `from stringalgo.kmp import kmp_search` and `from sigproc.fft import f
 | [FAQ.md](FAQ.md) | Frequently asked questions |
 | [DUE_DILIGENCE.md](DUE_DILIGENCE.md) | Diligence notes for reviewers |
 | [SECURITY.md](SECURITY.md) | Security policy |
-| [LICENSE](LICENSE) | All Rights Reserved |
+| [LICENSE](LICENSE) | MIT License |
 
 ---
 
 ## How to Run
+
+```bash
+git clone https://github.com/observabilityengine/Universe-Simulator.git
+cd Universe-Simulator
+```
 
 Each module is self-contained and runnable:
 
@@ -204,10 +211,9 @@ python -m ml.cart
 python -m graph.dinic
 python -m optim.lbfgs
 python -m finance.black_scholes
-python -m finance.black_scholes_iv
 ```
 
-Or run the top-level entry point (if present):
+Or run the top-level entry point:
 
 ```bash
 python main.py
@@ -262,10 +268,20 @@ The `evolution/` package contains original implementations of evolutionary and s
 3. Implementations are original and self-contained (standard library preferred; NumPy/SciPy only where required and declared).
 4. Prefer verifiable numerical results over narrative claims.
 5. Security-sensitive modules are research-only; consult [SECURITY.md](SECURITY.md) before any reuse.
-6. Production-ready, start-to-finish, complete code only — no skeletons, no scaffolding, no placeholders, no stubs.
+6. Complete, start-to-finish code only — no skeletons, no scaffolding, no placeholders, no stubs.
 
 ---
 
-## License & Access
+## Contributing
 
-See [LICENSE](LICENSE). Private repository. All rights reserved by the owner. Do not redistribute modules outside the authorized context.
+Issues and pull requests are welcome. Please keep new modules complete, original, and self-testing. See [TEST_SUITES.md](TEST_SUITES.md) for the expected self-test style.
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE).
+
+Copyright (c) 2024–2026 observabilityengine.
+
+Cryptographic modules remain research/educational only — see the additional notice in the LICENSE file and [SECURITY.md](SECURITY.md).
