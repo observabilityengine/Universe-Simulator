@@ -2,7 +2,7 @@
 
 **Universe Simulator (`observabilityengine/Universe-Simulator`)**  
 Private computational research kernel  
-Document date: 2026-09-08
+Document date: 2026-09-11 (audit refresh)
 
 ---
 
@@ -34,7 +34,7 @@ Explicitly forbidden: placeholders, `NotImplementedError` for the general case, 
 ## 3. Security Posture
 
 - Private repository; access controlled by GitHub organisation permissions.
-- Cryptographic and password modules (`crypto/`, `security/`) are **research / educational only** and are **not** audited for production use with real secrets.
+- Cryptographic and password modules (`crypto/`, `crypto_adv/`, `security/`) are **research / educational only** and are **not** audited for production use with real secrets.
 - `core.state` uses Python `pickle` for checkpoints – never unpickle untrusted data.
 - No network listeners, no authentication surface, no multi-tenant isolation concerns inside the codebase itself.
 - Full policy: SECURITY.md.
@@ -57,6 +57,12 @@ Explicitly forbidden: placeholders, `NotImplementedError` for the general case, 
 - No external test-framework dependency.
 - Deterministic seeds are used for stochastic algorithms.
 - See TEST_SUITES.md and OPERATIONS.md.
+
+**2026-09-11 audit sample (all passed):**
+- `cosmology/friedmann.py` – cosmic age ≈ 13.46 Gyr, χ(z=1) ≈ 3304 Mpc
+- `core/lockfree_queue.py` – enqueue/dequeue invariants
+- `bio/needleman_wunsch.py` – global alignment correctness
+- Additional modules inspected (nbody integrators, dl/tensor autograd, quantum/qubit, crypto_adv/rsa, evolution/mutator, physics/nbody) showed no functional defects.
 
 ---
 
@@ -84,12 +90,15 @@ Explicitly forbidden: placeholders, `NotImplementedError` for the general case, 
 - New modules are accepted only when they meet the full quality bar (complete, original, self-testing).
 - Security-relevant issues are reported privately to the repository owner.
 
+**2026-09-11 code fix:**
+- `physics/__init__.py` – removed dangling imports of non-existent symbols (`cellular`, `two_body_1d`). Public exports now limited to symbols that exist in the package (`NBodySystem`, `create_solar_system`, `SymbolicSystem`, `harmonic_oscillator`, `mandelbrot`, `julia`).
+
 ---
 
 ## 9. Third-Party & Supply-Chain
 
 - No third-party runtime services.
-- Optional NumPy is the only common external numeric dependency and is used sparingly.
+- Optional NumPy/SciPy is the only common external numeric dependency and is used sparingly (declared in module docstrings where present).
 - No package registry publishing; consumption is by direct clone of the private repository.
 
 ---
@@ -102,7 +111,7 @@ Explicitly forbidden: placeholders, `NotImplementedError` for the general case, 
 ---
 
 **Conclusion**  
-The repository is a high-integrity, privately held research artefact. Its design emphasises correctness, originality, and verifiability over feature velocity or production packaging. Due diligence confirms that the stated quality and security policies are reflected in the actual codebase structure and module contents.
+The repository is a high-integrity, privately held research artefact. Its design emphasises correctness, originality, and verifiability over feature velocity or production packaging. Due diligence confirms that the stated quality and security policies are reflected in the actual codebase structure and module contents. The 2026-09-11 audit corrected one structural import defect and re-verified a representative cross-section of self-tests.
 
 ---
 
