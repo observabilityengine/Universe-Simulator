@@ -45,6 +45,19 @@ Key points:
 
 ---
 
+## Naming note (stdlib collisions)
+
+Top-level package names **must not** collide with the Python standard library. Former packages `string/` and `signal/` were renamed:
+
+| Old (removed) | New |
+|---------------|-----|
+| `string/` | `stringalgo/` |
+| `signal/` | `sigproc/` |
+
+Import as `from stringalgo.kmp import kmp_search` and `from sigproc.fft import fft`.
+
+---
+
 ## Repository Structure
 
 ### Numerical Physics & Cosmology
@@ -106,10 +119,10 @@ Key points:
 | `mathlib/` | CG, QR, Cholesky, LU, SVD, determinants, PCA |
 | `matrix/` | Sparse and dense matrix formats / factorizations |
 | `numtheory/` | Miller–Rabin, Pollard's Rho, sieve, extended GCD |
-| `signal/` | FFT, wavelets, Hilbert, convolution, Savitzky–Golay, median filter |
+| `sigproc/` | FFT, wavelets, Hilbert, convolution, Savitzky–Golay (renamed from `signal/` to avoid stdlib collision) |
+| `stringalgo/` | KMP, Z-algorithm, suffix structures, edit distance (renamed from `string/` to avoid stdlib collision) |
 | `geometry/` | Computational geometry (Delaunay, …) |
 | `graph/` | Shortest paths, max-flow/Dinic, matching, SCC, MST, Louvain, betweenness, coloring |
-| `string/` | KMP, Z-algorithm, suffix structures, edit distance |
 | `sort/` | Sorting algorithms |
 | `search/` | Search algorithms |
 | `control/` | PID, LQR, LQG, Kalman, MPC, pole placement |
@@ -138,6 +151,7 @@ Key points:
 | [FAQ.md](FAQ.md) | Frequently asked questions |
 | [DUE_DILIGENCE.md](DUE_DILIGENCE.md) | Diligence notes for reviewers |
 | [SECURITY.md](SECURITY.md) | Security policy |
+| [LICENSE](LICENSE) | All Rights Reserved |
 
 ---
 
@@ -180,13 +194,17 @@ python -m compiler.interpreter
 python -m graphics.raytracer
 python -m image.canny
 
+# String algorithms / signal processing (renamed packages)
+python -m stringalgo.kmp
+python -m sigproc.fft
+
 # Classic packages
 python -m evolution.differential_evolution
 python -m ml.cart
 python -m graph.dinic
 python -m optim.lbfgs
 python -m finance.black_scholes
-python -m signal.fft
+python -m finance.black_scholes_iv
 ```
 
 Or run the top-level entry point (if present):
@@ -250,4 +268,4 @@ The `evolution/` package contains original implementations of evolutionary and s
 
 ## License & Access
 
-Private repository. All rights reserved by the owner. Do not redistribute modules outside the authorized context.
+See [LICENSE](LICENSE). Private repository. All rights reserved by the owner. Do not redistribute modules outside the authorized context.
