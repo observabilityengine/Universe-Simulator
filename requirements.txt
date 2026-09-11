@@ -1,5 +1,5 @@
 # Optional scientific dependencies used by some modules.
 # Most modules run with the standard library only.
 numpy>=1.24
-scipy>=1.10
+scipy>=1.18.1
 sympy>=1.12
